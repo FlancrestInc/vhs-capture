@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>VHS Status</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 24px; }
+    nav a { margin-right: 12px; }
+    pre { background: #f6f6f6; padding: 12px; overflow: auto; }
+    .status { font-weight: bold; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/capture">Capture</a>
+    <a href="/status">Status</a>
+    <a href="/recordings">Recordings</a>
+  </nav>
+  <h1>Capture Status</h1>
+
+  {% if message %}
+    <p>{{ message }}</p>
+  {% endif %}
+
+  <p class="status">Running: {{ 'Yes' if status.running else 'No' }}</p>
+  <p>Output file: {{ status.output_file or 'N/A' }}</p>
+  <p>Elapsed: {{ elapsed or 'N/A' }}</p>
+  <p>Remaining: {{ remaining or 'N/A' }}</p>
+
+  {% if status.running %}
+  <form method="post" action="/status/stop">
+    <button type="submit">Stop capture</button>
+  </form>
+  {% endif %}
+
+  <h2>FFmpeg stderr tail</h2>
+  <pre>{% for line in status.stderr_tail %}{{ line }}
+{% endfor %}</pre>
+</body>
+</html>

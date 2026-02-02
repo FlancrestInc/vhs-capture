@@ -1,0 +1,22 @@
+version: "3.9"
+
+services:
+  vhs-ui:
+    build: .
+    ports:
+      - "${VHS_UI_PORT:-8099}:8099"
+    environment:
+      VHS_OUTPUT_DIR: /output
+      VHS_UI_PORT: 8099
+      VHS_UI_USER: ${VHS_UI_USER:-}
+      VHS_UI_PASS: ${VHS_UI_PASS:-}
+    volumes:
+      - ./recordings:/output
+    devices:
+      - "${VHS_VIDEO_DEVICE:-/dev/video0}:/dev/video0"
+      - "/dev/snd:/dev/snd"
+    group_add:
+      - "video"
+      - "audio"
+    restart: unless-stopped
+    privileged: ${VHS_PRIVILEGED:-false}

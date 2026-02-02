@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>VHS Capture</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 24px; }
+    label { display: block; margin-top: 12px; }
+    input, select { padding: 6px; width: 320px; }
+    nav a { margin-right: 12px; }
+    .warning { color: #a00; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/capture">Capture</a>
+    <a href="/status">Status</a>
+    <a href="/recordings">Recordings</a>
+  </nav>
+  <h1>Start VHS Capture</h1>
+  {% if not video_devices or not audio_devices %}
+    <p class="warning">Missing devices. Make sure /dev/videoX and ALSA devices are available in the container.</p>
+  {% endif %}
+  <form method="post" action="/capture">
+    <label>Video device</label>
+    <select name="video_device" required>
+      {% for path, label in video_devices %}
+        <option value="{{ path }}">{{ label }}</option>
+      {% endfor %}
+    </select>
+
+    <label>Audio device (ALSA hw:X,Y)</label>
+    <select name="audio_device" required>
+      {% for path, label in audio_devices %}
+        <option value="{{ path }}">{{ label }}</option>
+      {% endfor %}
+    </select>
+
+    <label>Input type</label>
+    <select name="input_type">
+      <option value="composite">Composite</option>
+      <option value="s-video">S-Video</option>
+    </select>
+
+    <label>Duration (HH:MM:SS)</label>
+    <input type="text" name="duration" value="00:30:00" required>
+
+    <label>Output preset</label>
+    <select name="preset">
+      {% for value, label in presets %}
+        <option value="{{ value }}">{{ label }}</option>
+      {% endfor %}
+    </select>
+
+    <label>Output format</label>
+    <select name="output_format">
+      {% for fmt in output_formats %}
+        <option value="{{ fmt }}" {% if fmt == 'mkv' %}selected{% endif %}>{{ fmt }}</option>
+      {% endfor %}
+    </select>
+
+    <label>Filename prefix</label>
+    <input type="text" name="filename_prefix" value="capture">
+
+    <label>Tape label (optional)</label>
+    <input type="text" name="tape_label" value="">
+
+    <label>
+      <input type="checkbox" name="test_preview" value="1">
+      Test preview (10 seconds)
+    </label>
+
+    <label>
+      <input type="checkbox" name="dry_run" value="1">
+      Dry run (do not start capture)
+    </label>
+
+    <div style="margin-top: 16px;">
+      <button type="submit">Start capture</button>
+    </div>
+  </form>
+</body>
+</html>

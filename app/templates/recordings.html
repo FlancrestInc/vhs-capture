@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>VHS Recordings</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 24px; }
+    nav a { margin-right: 12px; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #ddd; padding: 8px; }
+    th { background: #f0f0f0; text-align: left; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/capture">Capture</a>
+    <a href="/status">Status</a>
+    <a href="/recordings">Recordings</a>
+  </nav>
+  <h1>Recordings</h1>
+  <p>Output directory: {{ output_dir }}</p>
+  <table>
+    <thead>
+      <tr>
+        <th>File</th>
+        <th>Size (MB)</th>
+        <th>Last modified</th>
+        <th>Download</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for rec in recordings %}
+      <tr>
+        <td>{{ rec.name }}</td>
+        <td>{{ '%.2f'|format(rec.size / 1024 / 1024) }}</td>
+        <td>{{ rec.mtime.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+        <td><a href="/recordings/{{ rec.name }}">Download</a></td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="4">No recordings yet.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>
